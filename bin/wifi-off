@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+
+nmcli radio wifi off
+echo "WiFi turned off"

@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+
+cd /opt/RubyMine-2018.3/bin/
+
+./rubymine.sh

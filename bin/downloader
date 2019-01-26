@@ -1,0 +1,63 @@
+#!/usr/bin/python3
+
+import requests
+import os.path
+import argparse
+import sys
+
+home = os.path.expanduser("~")
+
+
+def download(url, location, filename):
+    """ Downloads the file present at url and saves as
+        filename at given location.
+    """
+    request = requests.get(url)
+    if request.status_code == 404:
+        print("File not download!\nURL:", url)
+        return
+    file_loc = os.path.join(location, filename)
+    with open(file_loc, 'wb') as file:
+        for chunk in request.iter_content(chunk_size=512*1024):
+            if chunk:
+                file.write(chunk)
+    file.close()
+    return
+
+
+def setArgs():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("url", help="URL of the files to downloaded.")
+    parser.add_argument("--min", help="Minimun . Default is 1.", type=int)
+    parser.add_argument("max", help="The maximun number to iterate.", type=int)
+    parser.add_argument("location", help="Location relative to the home \
+        directory where you want to store files. Should be directory")
+    parser.add_argument("filename", help="""Base file name. Files will be of
+        name "filename_number.format"
+    """)
+    parser.add_argument("format", help="Format of file.")
+    args = parser.parse_args()
+    return args
+
+
+def validate_arguments(args):
+    location = os.path.join(home, args.location)
+    if not os.path.isdir(location):
+        print(location, "is not a directory")
+        sys.exit()
+    if args.format not in ("pdf", "zip"):
+        print("Invalid format!")
+        sys.exit()
+
+
+if __name__ == "__main__":
+    args = setArgs()
+    validate_arguments(args)
+    location = os.path.join(home, args.location)
+    min = args.min if args.min is not None else 1
+    max = args.max
+    for number in range(min, max + 1):
+        url = args.url % (number, )
+        filename = "%s_%0.2d.%s" % (args.filename, number, args.format)
+        print(filename, "Downloading...")
+        download(url, location, filename)

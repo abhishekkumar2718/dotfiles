@@ -1,0 +1,12 @@
+#!/usr/bin/bash
+
+backup_dir=~/github_repos/dotfiles/
+backup_dir_config=~/github_repos/dotfiles/.config/
+
+mkdir -p $backup_dir_config
+
+rsync -avzh ~/.config/i3 $backup_dir_config
+rsync -avzh ~/.config/polybar $backup_dir_config
+rsync -avzh ~/bin $backup_dir
+rsync -zvh ~/.bashrc $backup_dir
+rsync -zvh ~/.vimrc $backup_dir
