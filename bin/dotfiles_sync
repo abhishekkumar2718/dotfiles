@@ -3,10 +3,15 @@
 backup_dir=~/github_repos/dotfiles/
 backup_dir_config=~/github_repos/dotfiles/.config/
 
-mkdir -p $backup_dir_config
+mkdir -p $backup_dir/.config
 
-rsync -avzh ~/.config/i3 $backup_dir_config
-rsync -avzh ~/.config/polybar $backup_dir_config
+rsync -avzh ~/.config/i3 $backup_dir.config/
+rsync -avzh ~/.config/polybar $backup_dir.config/
 rsync -avzh ~/bin $backup_dir
 rsync -zvh ~/.bashrc $backup_dir
 rsync -zvh ~/.vimrc $backup_dir
+rsync -zvh ~/.gitconfig $backup_dir
+rsync -avzh ~/.config/autostart $backup_dir.config/
+rsync -avzh ~/.config/rofi $backup_dir.config/
+rsync -avzh ~/.config/xfce4 $backup_dir.config/
+rsync -avzh ~/.config/powerline-shell $backup_dir.config/

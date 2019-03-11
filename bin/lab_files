@@ -1,0 +1,56 @@
+#!/usr/bin/python
+
+import os
+import json
+import pexpect
+
+def parse(string):
+    var_list = []
+    variables = string.split(',')
+    for var in variables:
+        var_list.append(int(var))
+    return var_list
+
+ssh_nitk = '10.4.1.15'
+
+with open('/home/abhishek/scripts/lab_files.json', 'r') as read_file:
+    data = json.load(read_file)
+
+global_labs = None
+
+for user in data:
+    choice = input('Copy files for %s (Y/N): ' % (user["name"], ))
+    if choice == 'N':
+        continue
+    input_labs = input("Enter labs to copy (seperated by ','; . for %s) [Example: '1, 3']: " % (str(global_labs), ))
+    src_base = input("Enter source base name (. for 'lab%02d'): ")
+    dest_base = input("Enter destination base name (. for 'homework_%02d'): ")
+    if src_base == '.':
+        src_base = 'lab%02d'
+    if dest_base == '.':
+        dest_base = 'homework_%02d'
+
+    if input_labs == '.':
+        labs = global_labs
+    else:
+        labs = parse(input_labs)
+        global_labs = labs
+
+    username = user["username"]
+    password = user["password"]
+
+    for lab in labs:
+        src_folder = ('/home/abhishek/Lab_Files/%s' % (src_base, )) % (lab, )
+        dest_folder = dest_base % (lab, )
+        remote_host = "%s@%s" % (username, ssh_nitk)
+        remote_folder = "/home/%s/homework_%02d" % (username, lab)
+        cmd = 'scp -r %s "%s:%s"' % ( src_folder, remote_host, remote_folder)
+        print(cmd)
+        child = pexpect.spawn(cmd)
+        r = child.expect('Password: ')
+        child.sendline(password)
+        child.expect(pexpect.EOF)
+        print(child.before)
+        print("Lab %02d copied successfully!" % (lab, ))
+
+print("All transfers completed!")

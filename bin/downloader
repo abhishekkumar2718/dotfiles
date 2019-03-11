@@ -22,6 +22,7 @@ def download(url, location, filename):
             if chunk:
                 file.write(chunk)
     file.close()
+    print("%s downloaded!")
     return
 
 
@@ -45,10 +46,6 @@ def validate_arguments(args):
     if not os.path.isdir(location):
         print(location, "is not a directory")
         sys.exit()
-    if args.format not in ("pdf", "zip"):
-        print("Invalid format!")
-        sys.exit()
-
 
 if __name__ == "__main__":
     args = setArgs()

@@ -1,4 +1,5 @@
 #!/usr/bin/bash
 
-nmcli radio wifi on
-echo "WiFi turned on"
+nmcli radio wifi on;
+sleep 15;
+echo "WiFi turned on";
