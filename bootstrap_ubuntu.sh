@@ -1,66 +1,10 @@
 #! /usr/bin/env bash
 
-# Catch errors in pipelines
-set -o pipefail 
-# Exit on using undeclared variable
-set -o nounset
-
-if [ ${#@} -eq 1 ]; then
-  if [ "$1" == "--help" ]; then
-    printf -- "Usage: bootstrap_ubuntu.sh [OPTION]\n"
-    printf -- "Options:\n"
-    printf -- "--debug                    Run in debugging mode\n"
-    exit 0;
-  elif [ "$1" == "--debug" ]; then
-    set -o xtrace
-  fi;
-fi;
-
-success () {
-  printf -- "\033[32m$1\033[0m\n";
-}
-
-warning () {
-  printf -- "\033[33m$1\033[0m\n";
-}
-
-error() {
-  printf -- "\033[31m$1\033[0m\n";
-}
-
-step() {
-  printf -- "\033[1m$1\033[0m\n";
-}
-
-exec_command(){
-  printf -- "\033[37m";
-  $1;
-  printf -- "\033[0m";
-}
-
-warning "Use only on Ubuntu machines"
-_=$(command -v apt);
-if [ $? -ne 0 ] ; then
-  error "apt is not installed! Not an Ubuntu machine!"
-  exit;
-fi;
-success "apt is installed";
-
-warning "Must be run as root user";
-if [ "$EUID" -ne 0 ]; then
-  error "Not run as root user";
-  warning "Run script as - sudo ./bootstrap_ubuntu.sh"
-  exit;
-fi;
-success "Script ran as root user";
-
-set -o errexit
+source ./bootstrap_function.sh
 
 install_polybar(){
 
-  step "In install_polybar";
-  step "test";
-  if [ "$(command -v polybar)" -eq 0 ] ; then
+  if [ $(command -v polybar) -eq 0 ] ; then
     success "Polybar installed already";
     return 0;
   fi;
@@ -120,8 +64,10 @@ exec_command "apt upgrade";
 success "Current packages upgraded";
 
 step "Installing required packages";
-exec_command "apt install xfce4 xfce4-goodies vim i3 libi3ipc-glib firefox audacious rvm rofi curl tar cmake cmake-data libcairo2-dev libxcb1-dev libxcb-ewmh-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-randr0-dev libxcb-util0-dev libxcb-xkb-dev pkg-config python-xcbgen xcb-proto libxcb-xrm-dev i3-wm libasound2-dev libmpdclient-dev libiw-dev libcurl4-openssl-dev libpulse-dev libxcb-composite0-dev xcb libxcb-ewmh2 libgtk-3-dev";
-exec_command "pip install --user powerline";
+exec_command "apt install xfce4 xfce4-goodies vim i3 libi3ipc-glib firefox audacious rvm rofi curl tar cmake cmake-data libcairo2-dev libxcb1-dev libxcb-ewmh-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-randr0-dev libxcb-util0-dev libxcb-xkb-dev pkg-config python-xcbgen xcb-proto libxcb-xrm-dev i3-wm libasound2-dev libmpdclient-dev libiw-dev libcurl4-openssl-dev libpulse-dev libxcb-composite0-dev xcb libxcb-ewmh2 libgtk-3-dev python-pip python-dev build-essential fonts-powerline";
+exec_command "pip install --upgrade setuptools";
+exec_command "pip install --upgrade virtualenv";
+exec_command "pip install powerline-shell";
 success "Required packages installed";
 
 install_polybar;
@@ -132,13 +78,6 @@ step "Uninstalling Xfce4-panel and i3status";
 exec_command "apt remove xfce4-panel i3status";
 success "Xfce4-panel, i3status removed"
 
-step "Synchronising dotfiles"
-exec_command ".sync.sh"
-success "Dotfiles synchronized."
+backup_dotfiles;
 
-success "Enjoy your newly upgraded system."
-
-if [ "${@#"--debug"}" = "" ]; then
-  set +o xtrace
-fi;
-exit;
+synchronise_dotfiles;

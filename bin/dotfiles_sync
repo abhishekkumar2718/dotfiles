@@ -1,9 +1,8 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
-backup_dir=~/github_repos/dotfiles/
-backup_dir_config=~/github_repos/dotfiles/.config/
+backup_dir=$1
 
-mkdir -p $backup_dir/.config
+mkdir -p $backup_dir.config
 
 rsync -avzh ~/.config/i3 $backup_dir.config/
 rsync -avzh ~/.config/polybar $backup_dir.config/
