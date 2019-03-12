@@ -31,7 +31,7 @@ binary_exists() {
 
 backup_dotfiles() {
   step "Backing up old dotfiles";
-  exec_comand "$PWD/bin/dotfiles_sync $PWD/backup/";
+  exec_command "$PWD/bin/dotfiles_sync $PWD/backup/";
   success "Dotfiles successfully backed up to $PWD/backup";
 }
 

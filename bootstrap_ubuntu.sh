@@ -81,3 +81,8 @@ success "Xfce4-panel, i3status removed"
 backup_dotfiles;
 
 synchronise_dotfiles;
+
+# Removes default border line for i3 4.14.1
+exec_command "sed '204d' ~/.config/i3/config > ~/.config/i3/config";
+
+exit 0;

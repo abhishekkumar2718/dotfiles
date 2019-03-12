@@ -1,4 +1,4 @@
-".git"
+.git
 bootstrap*
 exclude_list.txt
 sync.sh

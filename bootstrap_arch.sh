@@ -18,3 +18,5 @@ success "xfce4-panel, i3status removed";
 backup_dotfiles;
 
 synchronise_dotfiles;
+
+exit 0;

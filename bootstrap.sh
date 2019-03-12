@@ -45,4 +45,4 @@ fi;
 
 error "Could not identify OS";
 step "Follow manual instructions on http://github.com/abhishekkumar2718/dotfiles/README.md";
-exit;
+exit 0;
